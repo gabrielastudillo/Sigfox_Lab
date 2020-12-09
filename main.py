@@ -3,6 +3,18 @@ from network import Sigfox
 import socket
 import struct
 import time
+import pycom
+from pysense import Pysense
+
+#from LIS2HH12 import LIS2HH12
+from SI7006A20 import SI7006A20
+#from LTR329ALS01 import LTR329ALS01
+#from MPL3115A2 import MPL3115A2,ALTITUDE,PRESSURE
+
+pycom.heartbeat(False)
+pycom.rgbled(0x0A0A08) # white
+
+py = Pysense()
 
 # init Sigfox for RCZ2 (USA, Mexico, Brazil)
 # other zones:
@@ -21,22 +33,15 @@ s.setblocking(True)
 # configure it as uplink only
 s.setsockopt(socket.SOL_SIGFOX, socket.SO_RX, False)
 
-adc = machine.ADC()
-apin = adc.channel(pin='P16')
-
 while True:
-    millivolts = apin.voltage()
-    degC = (millivolts - 500.0) / 10.0
-    degF = ((degC * 9.0) / 5.0) + 32.0
-    
-    print(millivolts)
-    print(degC)
-    print(degF)
+    si = SI7006A20(py)
+    tempC = si.temperature()
+    print(tempC)
     
     # Convert to byte array for transmission
-    raw = bytearray(struct.pack("f", degC))
+    raw = bytearray(struct.pack("f", tempC))
     
     s.send(raw)
-    print("Bytes sent, sleeping for 15 minutes.")
+    print("Bytes sent, sleeping for 15 minutes")
     
     time.sleep(900)
