@@ -49,7 +49,7 @@ while True:
     # Convert to byte array for transmission
     clean_bytes = struct.pack(">ii",
         int(temperature * 100), # Temperature in celcius
-        int(pressure * 100), # Atmospheric pressure in bar
+        int(pressure * 100)) # Atmospheric pressure in bar
         #int(light * 100), # Light in lux
         #int(humidity * 100), # Humidity in percentages
         #int(roll * 100), # Roll in degrees in the range -180 to 180
